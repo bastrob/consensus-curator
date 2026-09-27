@@ -7,7 +7,7 @@ couples unrelated collector modules through a single import.
 
 from typing import Protocol
 
-from ..models.document import RawDocument
+from consensus_curator.models.raw_document import RawDocument
 
 
 class Collector(Protocol):

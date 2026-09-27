@@ -19,7 +19,6 @@ Implemented:
 
 ```bash
 poetry run python -m scripts.manual_test_extraction \
-    --topic "AI coding assistants" \
     --feed https://openai.com/blog/rss.xml \
     --max-documents 3
 ```

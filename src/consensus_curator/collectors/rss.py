@@ -1,17 +1,14 @@
-import logging
+from collections.abc import Iterator
 from datetime import datetime
 from time import mktime
 from urllib.parse import urlparse
 
 import feedparser
 import trafilatura
+from loguru import logger
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-from ..models.document import RawDocument
-
-logger = logging.getLogger(__name__)
-
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+from consensus_curator.models.raw_document import RawDocument
 
 
 class RSSCollector:
@@ -40,38 +37,19 @@ class RSSCollector:
             raise ValueError("RSSCollector requires at least one feed URL.")
         self.feed_urls = feed_urls
 
-    def fetch(self, topic: str, max_documents: int = 20) -> list[RawDocument]:
-        keywords: list[str] = self._topic_keywords(topic)
+    def fetch(self) -> Iterator[RawDocument]:
         documents: list[RawDocument] = []
 
         for feed_url in self.feed_urls:
-            entries = self._parse_feed(feed_url)
-            for entry in entries:
-                if len(documents) >= max_documents:
-                    return documents
-                if not self._is_relevant(entry, keywords):
-                    continue
-                doc: RawDocument = self._entry_to_document(entry)
+            for entry in self._parse_feed(feed_url):
+                doc = self._entry_to_document(entry)
                 if doc is not None:
-                    documents.append(doc)
+                    yield doc
 
         logger.info(
             f"RSSCollector: {len(documents)} relevant documents collected "
-            f"across {len(self.feed_urls)} feeds for topic={topic!r}"
+            f"across {len(self.feed_urls)} feeds"
         )
-
-        return documents
-
-    @staticmethod
-    def _topic_keywords(topic: str) -> list[str]:
-        # Naive tokenization. Fine for v1 relevance gating; if this proves too
-        # strict/loose in practice, that's a signal to add a cheap embedding
-        # similarity pass here rather than tuning keyword lists by hand
-        return [w.lower() for w in topic.split() if len(w) > 2]
-
-    def _is_relevant(self, entry: feedparser.FeedParserDict, keywords: list[str]) -> bool:
-        haystack = f"{entry.get('title', '')} {entry.get('summary', '')}".lower()
-        return any(kw in haystack for kw in keywords)
 
     @retry(
         stop=stop_after_attempt(3),
