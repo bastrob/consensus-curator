@@ -1,6 +1,6 @@
 from psycopg import Connection
 
-from consensus_curator.models.raw_document import RawDocument
+from consensus_curator.models import RawDocument
 
 
 def save_raw_document(doc: RawDocument, conn: Connection) -> None:

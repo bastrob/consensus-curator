@@ -9,6 +9,7 @@ packages = [{ include = "consensus_curator", from = "src" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 langgraph = "^0.2.60"
+openai = "^3.22.0"
 pydantic = "^2.9.2"
 pydantic-settings = "^2.6.1"
 python-dotenv = "^1.0.1"

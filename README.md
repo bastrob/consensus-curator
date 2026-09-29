@@ -22,3 +22,8 @@ poetry run python -m scripts.manual_test_extraction \
     --feed https://openai.com/blog/rss.xml \
     --max-documents 3
 ```
+
+```bash
+poetry run python -m scripts.manual_test_summarizer \
+    --model-name "qwen3.5:9b"
+```

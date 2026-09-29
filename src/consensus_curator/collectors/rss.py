@@ -8,7 +8,7 @@ import trafilatura
 from loguru import logger
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
-from consensus_curator.models.raw_document import RawDocument
+from consensus_curator.models import RawDocument
 
 
 class RSSCollector:

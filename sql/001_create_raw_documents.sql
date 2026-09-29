@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS raw_documents (
     url TEXT NOT NULL,
     domain TEXT NOT NULL,
     title TEXT NOT NULL,
-    published_at TIMESTAMPTZ,
+    published_at TIMESTAMPTZ NULL,
     content TEXT NOT NULL,
     fetched_at TIMESTAMPTZ
 )

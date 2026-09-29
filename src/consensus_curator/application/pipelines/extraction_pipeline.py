@@ -2,7 +2,7 @@ from itertools import islice
 
 from loguru import logger
 
-from consensus_curator.collectors.rss import RSSCollector
+from consensus_curator.collectors import RSSCollector
 from consensus_curator.storage.connection import get_connection
 from consensus_curator.storage.raw_document_repository import save_raw_document
 
