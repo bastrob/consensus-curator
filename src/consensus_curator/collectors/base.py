@@ -5,6 +5,7 @@ means editing a shared enum every time a new collector is added, which
 couples unrelated collector modules through a single import.
 """
 
+from collections.abc import Iterator
 from typing import Protocol
 
 from consensus_curator.models import RawDocument
@@ -13,14 +14,14 @@ from consensus_curator.models import RawDocument
 class Collector(Protocol):
     source_type: str
 
-    def fetch(self, topic: str, max_documents: int = 20) -> list[RawDocument]:
+    def fetch(self) -> Iterator[RawDocument]:
         """
-        Fetch and normalize documents relevant to `topic`.
+        Fetch all available documents from this source, unfiltered.
 
-        Implementations own their own relevance filtering (e.g. RSS collector
-        filters entries by keyword match against the topic before the more
-        expensive fetch+clean step) — callers should be able to assume
-        everything returned is at least plausibly on-topic, not run a second
-        relevance pass themselves.
+        Implementations are responsible for their own source-specific
+        details (parsing, retries, per-entry failure handling) but must not
+        filter by topic or relevance — that's the Selector's job downstream.
+        Callers should assume everything yielded is raw and unvalidated for
+        relevance; results are persisted as-is by the calling pipeline.
         """
         ...

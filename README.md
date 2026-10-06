@@ -27,3 +27,8 @@ poetry run python -m scripts.manual_test_extraction \
 poetry run python -m scripts.manual_test_summarizer \
     --model-name "qwen3.5:9b"
 ```
+
+```bash
+poetry run python -m scripts.manual_test_classifier \
+    --model-name "qwen3.5:9b"
+```
